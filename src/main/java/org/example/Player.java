@@ -82,16 +82,16 @@ public class Player{
                 return Objects.hash(playerID, firstName, lastName, weight, height, birthDate);
         }
 
-//        @Override
-//        public String toString() {
-//                return "Player{" +
-//                        "playerID=" + playerID +
-//                        ", firstName='" + firstName + '\'' +
-//                        ", lastName='" + lastName + '\'' +
-//                        ", weight=" + weight +
-//                        ", height=" + height +
-//                        ", birthDate=" + birthDate +
-//                        '}';
-//        }
+        @Override
+        public String toString() {
+                return "Player{" +
+                        "playerID=" + playerID +
+                        ", firstName='" + firstName + '\'' +
+                        ", lastName='" + lastName + '\'' +
+                        ", weight=" + weight +
+                        ", height=" + height +
+                        ", birthDate=" + birthDate +
+                        '}';
+        }
 
 }

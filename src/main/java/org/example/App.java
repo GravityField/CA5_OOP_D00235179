@@ -77,10 +77,17 @@ public class App
                         break;
                     case FIND_BY_KEY:
                         System.out.println("Enter Player ID to search by:");
+                        int index = 0;
                         idKey = kb.nextInt();
-                        Player pResult = playerList.get(idKey);
+                        for(int i = 0; i<playerList.size(); i++)
+                        {
+                            if(playerList.get(i).getPlayerID() == idKey)
+                            {
+                                index = i;
+                            }
+                        }
+                        Player pResult = playerList.get(index);
                         Team tResult = retrieveByKeyHash(map, pResult);
-                        System.out.println(tResult);
                         if (tResult != null) {
                             System.out.println(tResult);
                         } else {
