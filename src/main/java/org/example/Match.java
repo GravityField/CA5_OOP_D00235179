@@ -14,4 +14,28 @@ public class Match {
                 this.teams = teams;
                 this.dateTime = dateTime;
         }
+
+        public int getMatchID() {
+                return matchID;
+        }
+
+        public void setMatchID(int matchID) {
+                this.matchID = matchID;
+        }
+
+        public ArrayList<Team> getTeams() {
+                return teams;
+        }
+
+        public void setTeams(ArrayList<Team> teams) {
+                this.teams = teams;
+        }
+
+        public LocalDateTime getDateTime() {
+                return dateTime;
+        }
+
+        public void setDateTime(LocalDateTime dateTime) {
+                this.dateTime = dateTime;
+        }
 }

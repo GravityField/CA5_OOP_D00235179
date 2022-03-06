@@ -14,4 +14,30 @@ public class Team {
         this.teamName = teamName;
         this.members = members;
     }
+
+    public int getTeamID() {
+        return teamID;
+    }
+
+    public void setTeamID(int teamID) {
+        this.teamID = teamID;
+    }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
+    }
+
+    public List<Player> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<Player> members) {
+        this.members = members;
+    }
 }
+
+

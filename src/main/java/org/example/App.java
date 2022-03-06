@@ -20,12 +20,14 @@ public class App
     {
         Scanner kb = new Scanner(System.in);
         ArrayList<Player> playerList = new ArrayList<>();
-        ArrayList<Team> teamsList =  new ArrayList<>();
+        List<Team> teamsList =  new ArrayList<>();
 
         initialize(playerList, teamsList);
 
         Map<Player, Team> map = new HashMap<>();
         Map<String, Player> map2 = new TreeMap<>();
+        TeamNameComparator firstNameComparator = new TeamNameComparator();
+        teamsList.sort(firstNameComparator);
 
         map.put(playerList.get(0), teamsList.get(0));
         map.put(playerList.get(1), teamsList.get(0));
@@ -55,8 +57,8 @@ public class App
         //        System.out.println(key + "'s team is: " +  team);
 
 
-
         int option = 0;
+        int idKey;
         final int DISPLAY_ALL = 1;
         final int FIND_BY_KEY = 2;
         final int DISPLAY_ALL_TREEMAP = 3;
@@ -74,9 +76,11 @@ public class App
                         displayAllPlayers(playerList);
                         break;
                     case FIND_BY_KEY:
-                        System.out.println("Enter Key to search by:");
-                        String key = kb.nextLine();
-                        Team tResult = retrieveByKeyHash(map, key);
+                        System.out.println("Enter Player ID to search by:");
+                        idKey = kb.nextInt();
+                        Player pResult = playerList.get(idKey);
+                        Team tResult = retrieveByKeyHash(map, pResult);
+                        System.out.println(tResult);
                         if (tResult != null) {
                             System.out.println(tResult);
                         } else {
@@ -84,14 +88,7 @@ public class App
                         }
                         break;
                     case DISPLAY_ALL_TREEMAP:
-                        System.out.println("Enter Key to search by:");
-                        key = kb.nextLine();
-                        Player pResult = retrieveByKeyTree(map2, key);
-                        if (pResult != null) {
-                            System.out.println(pResult);
-                        } else {
-                            System.out.println("Not Found");
-                        }
+                        displayAllTreeMap(map2);
                         break;
                     case EXIT:
                         break;
@@ -109,12 +106,13 @@ public class App
         System.out.println("Menu Exited");
 
     }
+
     private void printMenu()
     {
-        System.out.println("Main Menu");
+        System.out.println("\nMain Menu");
         System.out.println("1.Display All Players");
-        System.out.println("2.Retrieve Player By Key");
-        System.out.println("3.");
+        System.out.println("2.Retrieve Player By Key HashMap");
+        System.out.println("3.Retrieve Team By Key TreeMap");
         System.out.println("4.");
         System.out.println("-1. EXIT");
     }
@@ -165,7 +163,18 @@ public class App
         teamsList.add(t2);
         teamsList.add(t3);
     }
-
+    private void displayAllTreeMap(Map<String, Player> map2)
+    {
+        Scanner kb = new Scanner(System.in);
+        System.out.println("Enter Key to search by:");
+        String key = kb.nextLine();
+        Player pResult = retrieveByKeyTree(map2, key);
+        if (pResult != null) {
+            System.out.println(pResult);
+        } else {
+            System.out.println("Not Found");
+        }
+    }
     private void displayAllPlayers(List<Player> list)
     {
         System.out.println("\t\t\t\t\t---- Player Table ----");
@@ -176,14 +185,12 @@ public class App
             System.out.printf("%-10s%-10s%-10s%-10.2f%-10.2f%-15s\n", p.getPlayerID(), p.getFirstName(), p.getLastName(), p.getWeight(), p.getHeight(), p.getBirthDate());
         }
     }
-    private Team retrieveByKeyHash(Map<Player, Team> map, String key)
+    private Team retrieveByKeyHash(Map<Player, Team> map, Player key)
     {
-
         return map.get(key);
     }
     private Player retrieveByKeyTree(Map<String, Player> map, String key)
     {
-
         return map.get(key);
     }
 

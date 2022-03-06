@@ -1,8 +1,9 @@
 package org.example;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
-public class Player {
+public class Player{
 
         private int playerID;
         private String firstName;
@@ -68,17 +69,29 @@ public class Player {
                 this.birthDate = birthDate;
         }
 
-
+        @Override
+        public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+                Player player = (Player) o;
+                return playerID == player.playerID && Double.compare(player.weight, weight) == 0 && Double.compare(player.height, height) == 0 && firstName.equals(player.firstName) && lastName.equals(player.lastName) && birthDate.equals(player.birthDate);
+        }
 
         @Override
-        public String toString() {
-                return "Player{" +
-                        "playerID=" + playerID +
-                        ", firstName='" + firstName + '\'' +
-                        ", lastName='" + lastName + '\'' +
-                        ", weight=" + weight +
-                        ", height=" + height +
-                        ", birthDate=" + birthDate +
-                        '}';
+        public int hashCode() {
+                return Objects.hash(playerID, firstName, lastName, weight, height, birthDate);
         }
+
+//        @Override
+//        public String toString() {
+//                return "Player{" +
+//                        "playerID=" + playerID +
+//                        ", firstName='" + firstName + '\'' +
+//                        ", lastName='" + lastName + '\'' +
+//                        ", weight=" + weight +
+//                        ", height=" + height +
+//                        ", birthDate=" + birthDate +
+//                        '}';
+//        }
+
 }
