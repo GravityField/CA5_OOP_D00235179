@@ -19,49 +19,44 @@ public class App
     public void start()
     {
         Scanner kb = new Scanner(System.in);
+
+        //Q1
         ArrayList<Player> playerList = new ArrayList<>();
         List<Team> teamsList =  new ArrayList<>();
 
         initialize(playerList, teamsList);
 
-        Map<Player, Team> map = new HashMap<>();
-        Map<String, Player> map2 = new TreeMap<>();
+        //Q3
+        Map<String, Player> map = new HashMap<>();
+
+        Map<Integer, Player> map2 = new TreeMap<>();
+
+
+        // Q6
+        PriorityQueue<Player> queue = new PriorityQueue<>(new ChampionshipWinsComparator(SortType.Ascending));
+        //Q7
+        PriorityQueue<Player> queue2 = new PriorityQueue<>(new TwoFieldComparator(SortType.Ascending));
+
+
+
+
         TeamNameComparator firstNameComparator = new TeamNameComparator();
         teamsList.sort(firstNameComparator);
 
-        map.put(playerList.get(0), teamsList.get(0));
-        map.put(playerList.get(1), teamsList.get(0));
-        map.put(playerList.get(2), teamsList.get(0));
-        map.put(playerList.get(3), teamsList.get(0));
-        map.put(playerList.get(4), teamsList.get(1));
-        map.put(playerList.get(5), teamsList.get(1));
-        map.put(playerList.get(6), teamsList.get(1));
-        map.put(playerList.get(7), teamsList.get(1));
-        map.put(playerList.get(8), teamsList.get(2));
-        map.put(playerList.get(9), teamsList.get(2));
+        for (Player player : playerList) {
+            map.put(player.getLastName(), player);
+        }
 
-
-        map2.put(playerList.get(0).getFirstName(), playerList.get(0));
-        map2.put(playerList.get(1).getFirstName(), playerList.get(1));
-        map2.put(playerList.get(2).getFirstName(), playerList.get(2));
-        map2.put(playerList.get(3).getFirstName(), playerList.get(3));
-        map2.put(playerList.get(4).getFirstName(), playerList.get(4));
-        map2.put(playerList.get(5).getFirstName(), playerList.get(5));
-        map2.put(playerList.get(6).getFirstName(), playerList.get(6));
-        map2.put(playerList.get(7).getFirstName(), playerList.get(7));
-        map2.put(playerList.get(8).getFirstName(), playerList.get(8));
-        map2.put(playerList.get(9).getFirstName(), playerList.get(9));
-
-        //        String key = "Jim";
-        //        String team = map.get(key);
-        //        System.out.println(key + "'s team is: " +  team);
-
+        for (Player player : playerList) {
+            map2.put(player.getPlayerID(), player);
+        }
 
         int option = 0;
-        int idKey;
         final int DISPLAY_ALL = 1;
-        final int FIND_BY_KEY = 2;
-        final int DISPLAY_ALL_TREEMAP = 3;
+        final int FIND_BY_KEY_HASHMAP = 2;
+        final int FIND_BY_KEY_TREEMAP = 3;
+        final int PRIORITY_QUEUE_SEQUENCE = 4;
+        final int PRIORITY_QUEUE_TWO_FIELD = 5;
         final int EXIT = -1;
 
         while(option != EXIT)
@@ -75,27 +70,38 @@ public class App
                     case DISPLAY_ALL:
                         displayAllPlayers(playerList);
                         break;
-                    case FIND_BY_KEY:
-                        System.out.println("Enter Player ID to search by:");
-                        int index = 0;
-                        idKey = kb.nextInt();
-                        for(int i = 0; i<playerList.size(); i++)
-                        {
-                            if(playerList.get(i).getPlayerID() == idKey)
-                            {
-                                index = i;
-                            }
-                        }
-                        Player pResult = playerList.get(index);
-                        Team tResult = retrieveByKeyHash(map, pResult);
-                        if (tResult != null) {
-                            System.out.println(tResult);
-                        } else {
-                            System.out.println("Not Found");
+                    case FIND_BY_KEY_HASHMAP:
+                        hashMap(map);
+                        break;
+                    case FIND_BY_KEY_TREEMAP:
+                        treeMap(map2);
+                        break;
+                    case PRIORITY_QUEUE_SEQUENCE:
+                        //add 2 third priority
+                        queue.add(playerList.get(0));
+                        queue.add(playerList.get(1));
+
+                        //add 2 second priority
+                        queue.add(playerList.get(2));
+                        queue.add(playerList.get(3));
+                        //remove and display element
+                        queue.remove();
+                        System.out.println(queue);
+
+                        queue.add(playerList.get(6));
+                        System.out.println(queue);
+                        queue.remove();
+                        System.out.println(queue);
+                        while ( !queue.isEmpty() ) {
+                            System.out.println(queue.remove());
                         }
                         break;
-                    case DISPLAY_ALL_TREEMAP:
-                        displayAllTreeMap(map2);
+                    case PRIORITY_QUEUE_TWO_FIELD:
+                        queue2.addAll(playerList);
+                        while( !queue2.isEmpty() ) {
+                            System.out.println(queue2.remove());
+                        }
+
                         break;
                     case EXIT:
                         break;
@@ -118,23 +124,25 @@ public class App
     {
         System.out.println("\nMain Menu");
         System.out.println("1.Display All Players");
-        System.out.println("2.Retrieve Player By Key HashMap");
-        System.out.println("3.Retrieve Team By Key TreeMap");
-        System.out.println("4.");
+        System.out.println("2.Retrieve Player By Last Name HashMap");
+        System.out.println("3.Retrieve Player By ID TreeMap");
+        System.out.println("4. Priority Queue Sequence Simulation");
+        System.out.println("5. Priority Queue Two Field");
         System.out.println("-1. EXIT");
     }
     private void initialize(List<Player> list, List<Team> teamsList)
     {
-        Player p1 = new Player(0,"Jim","Jam",60.50,160,LocalDate.of(1990,12,10));
-        Player p2 = new Player(1,"John","Jameson",60.50,160,LocalDate.of(1970,1,17));
-        Player p3 = new Player(2,"Michael","Flynn",75.50,170,LocalDate.of(2000,9,14));
-        Player p4 = new Player(3,"Tim","Adejumo",65.50,150,LocalDate.of(2002,4,1));
-        Player p5 = new Player(4,"Nikita","Fedans",68.90,160,LocalDate.of(2001,5,12));
-        Player p6 = new Player(5,"Jimmy","Jammy",60.50,160,LocalDate.of(1970,12,10));
-        Player p7 = new Player(6,"Johnny","Jameson",60.50,160,LocalDate.of(1960,1,12));
-        Player p8 = new Player(7,"Michelle","Fly",75.50,170,LocalDate.of(2002,9,19));
-        Player p9 = new Player(8,"Timmy","Ada",65.50,150,LocalDate.of(2006,2,1));
-        Player p10 = new Player(9,"Nikki","Federal",68.90,160,LocalDate.of(2005,3,12));
+
+        Player p1 = new Player(0,"Jim","Jam",60.50,160,LocalDate.of(1990,12,10), 0);
+        Player p2 = new Player(1,"John","Jameson",60.50,160,LocalDate.of(1970,1,17), 0);
+        Player p3 = new Player(2,"Michael","Flynn",75.50,170,LocalDate.of(2000,9,14), 1);
+        Player p4 = new Player(5,"Tim","Adejumo",65.50,150,LocalDate.of(2002,4,1), 1);
+        Player p5 = new Player(4,"Nikita","Fedans",68.90,160,LocalDate.of(2001,5,12), 2);
+        Player p6 = new Player(3,"Jimmy","Jammy",60.50,160,LocalDate.of(1970,12,10), 2);
+        Player p7 = new Player(6,"Tim","Jameson",60.50,160,LocalDate.of(1960,1,12), 3);
+        Player p8 = new Player(7,"Michelle","Fly",75.50,170,LocalDate.of(2002,9,19), 0);
+        Player p9 = new Player(8,"Tim","Ada",65.50,150,LocalDate.of(2006,2,1), 0);
+        Player p10 = new Player(9,"Nikki","Federal",68.90,160,LocalDate.of(2005,3,12), 0);
 
         ArrayList<Player> list1 = new ArrayList<>();
         ArrayList<Player> list2 = new ArrayList<>();
@@ -169,19 +177,29 @@ public class App
         teamsList.add(t1);
         teamsList.add(t2);
         teamsList.add(t3);
+
+
     }
-    private void displayAllTreeMap(Map<String, Player> map2)
-    {
+
+    private void hashMap(Map<String, Player> map) {
         Scanner kb = new Scanner(System.in);
-        System.out.println("Enter Key to search by:");
+        System.out.println("Enter Player Last Name to search by:");
         String key = kb.nextLine();
-        Player pResult = retrieveByKeyTree(map2, key);
+
+        Player pResult = map.get(key);
         if (pResult != null) {
             System.out.println(pResult);
         } else {
             System.out.println("Not Found");
         }
     }
+    private void treeMap(Map<Integer, Player> map2)
+    {
+        for (Map.Entry<Integer, Player> entry : map2.entrySet()) {
+            System.out.println("Value: " + entry.getValue());
+        }
+    }
+
     private void displayAllPlayers(List<Player> list)
     {
         System.out.println("\t\t\t\t\t---- Player Table ----");
@@ -189,16 +207,8 @@ public class App
 
         for(Player p: list)
         {
-            System.out.printf("%-10s%-10s%-10s%-10.2f%-10.2f%-15s\n", p.getPlayerID(), p.getFirstName(), p.getLastName(), p.getWeight(), p.getHeight(), p.getBirthDate());
+            System.out.print(p);
         }
-    }
-    private Team retrieveByKeyHash(Map<Player, Team> map, Player key)
-    {
-        return map.get(key);
-    }
-    private Player retrieveByKeyTree(Map<String, Player> map, String key)
-    {
-        return map.get(key);
     }
 
 }
