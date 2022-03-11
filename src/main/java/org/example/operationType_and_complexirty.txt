@@ -1,0 +1,12 @@
+
+
+
+Hash Map: O(1)
+
+
+
+Tree Map: o log(n)
+
+
+
+Priority Queue: O(n)
