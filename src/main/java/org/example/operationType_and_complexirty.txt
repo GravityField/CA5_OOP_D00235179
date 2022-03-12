@@ -1,12 +1,18 @@
 
 
+Switch case
 
-Hash Map: O(1)
+DISPLAY_ALL:
+ArrayList - 0(n)
 
+FIND_BY_KEY_HASHMAP:
+Hash Map - O(1)
 
+FIND_BY_KEY_TREEMAP:
+Tree Map: O (log n)
 
-Tree Map: o log(n)
+PRIORITY_QUEUE_SEQUENCE:
+Priority Queue: O (log n)
 
-
-
-Priority Queue: O(n)
+PRIORITY_QUEUE_TWO_FIELD:
+Priority Queue: O (log n)
