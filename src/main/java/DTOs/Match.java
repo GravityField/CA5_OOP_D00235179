@@ -1,4 +1,4 @@
-package org.example;
+package DTOs;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

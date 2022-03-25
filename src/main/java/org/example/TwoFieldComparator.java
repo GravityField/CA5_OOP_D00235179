@@ -1,5 +1,7 @@
 package org.example;
 
+import DTOs.Player;
+
 import java.util.Comparator;
 
 public class TwoFieldComparator implements Comparator<Player> {

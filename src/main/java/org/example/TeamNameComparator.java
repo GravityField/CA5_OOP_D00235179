@@ -1,5 +1,7 @@
 package org.example;
 
+import DTOs.Team;
+
 import java.util.Comparator;
 
 public class TeamNameComparator implements Comparator<Team> {

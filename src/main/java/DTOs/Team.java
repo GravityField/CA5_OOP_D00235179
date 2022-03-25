@@ -1,6 +1,7 @@
-package org.example;
+package DTOs;
 
-import java.time.LocalDate;
+import DTOs.Player;
+
 import java.util.List;
 
 public class Team {

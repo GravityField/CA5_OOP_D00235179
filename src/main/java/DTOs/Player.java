@@ -1,4 +1,4 @@
-package org.example;
+package DTOs;
 
 import java.time.LocalDate;
 import java.util.Objects;
