@@ -1,4 +1,4 @@
-package org.example;
+package Comparators;
 
 import static org.junit.Assert.assertTrue;
 

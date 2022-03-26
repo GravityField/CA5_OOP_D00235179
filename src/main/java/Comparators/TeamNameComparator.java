@@ -1,4 +1,4 @@
-package org.example;
+package Comparators;
 
 import DTOs.Team;
 

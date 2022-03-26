@@ -1,4 +1,4 @@
-package org.example;
+package Comparators;
 
 // An enumerated type that is passed into a Comparator to set the
 // order to "Ascending" or "Descending" order of the field/attributes

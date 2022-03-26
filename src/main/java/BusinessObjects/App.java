@@ -1,8 +1,14 @@
 package BusinessObjects;
 
+import Comparators.ChampionshipWinsComparator;
+import Comparators.SortType;
+import Comparators.TeamNameComparator;
+import Comparators.TwoFieldComparator;
+import DAOs.MySqlPlayerDao;
+import DAOs.PlayerDaoInterface;
 import DTOs.Player;
 import DTOs.Team;
-import org.example.*;
+import Exceptions.DaoException;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -24,6 +30,56 @@ public class App
 
     public void start()
     {
+
+        PlayerDaoInterface IPlayerDao = new MySqlPlayerDao();
+
+
+        try
+        {
+            System.out.println("\nCall findAllPlayers()");
+            List<Player> players = IPlayerDao.findAllPlayers();     // call a method in the DAO
+
+            if( players.isEmpty() )
+                System.out.println("There are no Players");
+            else {
+                for (Player player : players)
+                    System.out.println("Player: " + player.toString());
+            }
+
+            // test dao - with username and password that we know are present in the database
+//            System.out.println("\nCall: findUserByUsernamePassword()");
+//            String username = "smithj";
+//            String password = "password";
+//            User user = IUserDao.findUserByUsernamePassword(username, password);
+
+//            if( user != null ) // null returned if userid and password not valid
+//                System.out.println("User found: " + user);
+//            else
+//                System.out.println("Username with that password not found");
+
+            // test dao - with an invalid username (i.e. not in database)
+//            username = "madmax";
+//            password = "thunderdome";
+//            user = IUserDao.findUserByUsernamePassword(username, password);
+//            if(user != null)
+//                System.out.println("Username: " + username + " was found: " + user);
+//            else
+//                System.out.println("Username: " + username + ", password: " + password +" is not valid.");
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+
+
+
+
+
+
+
+
+
+
         Scanner kb = new Scanner(System.in);
 
         //Q1
