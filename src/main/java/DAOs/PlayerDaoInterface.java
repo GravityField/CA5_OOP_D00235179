@@ -28,7 +28,7 @@ public interface PlayerDaoInterface
 {
     public List<Player> findAllPlayers() throws DaoException;
 
-//    public Player findPlayerByUsernamePassword(String username, String password) throws DaoException;
+    public Player findPlayerByID(int id) throws DaoException;
 
     public List<Player> findAllPlayersLastNameContains(String subString) throws DaoException;
 

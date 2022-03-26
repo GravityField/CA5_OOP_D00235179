@@ -31,55 +31,6 @@ public class App
     public void start()
     {
 
-        PlayerDaoInterface IPlayerDao = new MySqlPlayerDao();
-
-
-        try
-        {
-            System.out.println("\nCall findAllPlayers()");
-            List<Player> players = IPlayerDao.findAllPlayers();     // call a method in the DAO
-
-            if( players.isEmpty() )
-                System.out.println("There are no Players");
-            else {
-                for (Player player : players)
-                    System.out.println("Player: " + player.toString());
-            }
-
-            // test dao - with username and password that we know are present in the database
-//            System.out.println("\nCall: findUserByUsernamePassword()");
-//            String username = "smithj";
-//            String password = "password";
-//            User user = IUserDao.findUserByUsernamePassword(username, password);
-
-//            if( user != null ) // null returned if userid and password not valid
-//                System.out.println("User found: " + user);
-//            else
-//                System.out.println("Username with that password not found");
-
-            // test dao - with an invalid username (i.e. not in database)
-//            username = "madmax";
-//            password = "thunderdome";
-//            user = IUserDao.findUserByUsernamePassword(username, password);
-//            if(user != null)
-//                System.out.println("Username: " + username + " was found: " + user);
-//            else
-//                System.out.println("Username: " + username + ", password: " + password +" is not valid.");
-        }
-        catch( DaoException e )
-        {
-            e.printStackTrace();
-        }
-
-
-
-
-
-
-
-
-
-
         Scanner kb = new Scanner(System.in);
 
         //Q1
@@ -119,6 +70,8 @@ public class App
         final int FIND_BY_KEY_TREEMAP = 3;
         final int PRIORITY_QUEUE_SEQUENCE = 4;
         final int PRIORITY_QUEUE_TWO_FIELD = 5;
+        final int FIND_ALL_PLAYERS = 6;
+        final int FIND_PLAYER_BY_KEY= 7;
         final int EXIT = -1;
 
         while(option != EXIT)
@@ -165,6 +118,12 @@ public class App
                         }
 
                         break;
+                    case FIND_ALL_PLAYERS:
+                            findAllPlayers();
+                        break;
+                    case FIND_PLAYER_BY_KEY:
+                            findPlayerByKey();
+                        break;
                     case EXIT:
                         break;
                     default:
@@ -190,7 +149,54 @@ public class App
         System.out.println("3.Retrieve Player By ID TreeMap");
         System.out.println("4. Priority Queue Sequence Simulation");
         System.out.println("5. Priority Queue Two Field");
+        System.out.println("6. Find All Players DB");
+        System.out.println("7. Find Player by Key DB");
         System.out.println("-1. EXIT");
+    }
+    private void findAllPlayers()
+    {
+        PlayerDaoInterface IPlayerDao = new MySqlPlayerDao();
+
+        try {
+            System.out.println("\nCall findAllPlayers()");
+            List<Player> players = IPlayerDao.findAllPlayers();     // call a method in the DAO
+
+            if (players.isEmpty())
+                System.out.println("There are no Players");
+            else {
+                for (Player player : players)
+                    System.out.println("Player: " + player.toString());
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+    }
+    private void findPlayerByKey()
+    {
+        PlayerDaoInterface IPlayerDao = new MySqlPlayerDao();
+        Scanner kb = new Scanner(System.in);
+
+        try
+        {
+            System.out.println("\nCall findPlayerByID()");
+            System.out.println("Enter ID to search for:");
+            int id = kb.nextInt();
+            Player player = IPlayerDao.findPlayerByID(id);
+
+            if( player != null )
+                System.out.println("Player: " + player);
+            else {
+                System.out.println("There are no Players with this id");
+            }
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+
     }
     private void initialize(List<Player> list, List<Team> teamsList)
     {
