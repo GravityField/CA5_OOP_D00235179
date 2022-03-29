@@ -30,6 +30,9 @@ public interface PlayerDaoInterface
 
     public Player findPlayerByID(int id) throws DaoException;
 
+    public void deletePlayerByID(int id) throws DaoException;
+
+
     public List<Player> findAllPlayersLastNameContains(String subString) throws DaoException;
 
 

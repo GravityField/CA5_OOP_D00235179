@@ -72,6 +72,8 @@ public class App
         final int PRIORITY_QUEUE_TWO_FIELD = 5;
         final int FIND_ALL_PLAYERS = 6;
         final int FIND_PLAYER_BY_KEY= 7;
+        final int DELETE_PLAYER_BY_KEY= 8;
+
         final int EXIT = -1;
 
         while(option != EXIT)
@@ -124,6 +126,8 @@ public class App
                     case FIND_PLAYER_BY_KEY:
                             findPlayerByKey();
                         break;
+                    case DELETE_PLAYER_BY_KEY:
+                        deletePlayerByID();
                     case EXIT:
                         break;
                     default:
@@ -149,8 +153,11 @@ public class App
         System.out.println("3.Retrieve Player By ID TreeMap");
         System.out.println("4. Priority Queue Sequence Simulation");
         System.out.println("5. Priority Queue Two Field");
-        System.out.println("6. Find All Players DB");
-        System.out.println("7. Find Player by Key DB");
+        System.out.println("Database Section: ");
+        System.out.println("6. Find All Players");
+        System.out.println("7. Find Player by Key");
+        System.out.println("8. Delete Player by Key");
+
         System.out.println("-1. EXIT");
     }
     private void findAllPlayers()
@@ -191,6 +198,24 @@ public class App
             else {
                 System.out.println("There are no Players with this id");
             }
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+
+    }
+    private void deletePlayerByID()
+    {
+        PlayerDaoInterface IPlayerDao = new MySqlPlayerDao();
+        Scanner kb = new Scanner(System.in);
+
+        try
+        {
+            System.out.println("\nCall deletePlayerByID()");
+            System.out.println("Enter ID to delete:");
+            int id = kb.nextInt();
+            IPlayerDao.deletePlayerByID(id);
         }
         catch( DaoException e )
         {

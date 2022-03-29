@@ -74,6 +74,43 @@ public class MySqlPlayerDao extends MySqlDao implements PlayerDaoInterface
     }
 
     @Override
+    public void deletePlayerByID(int id) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        int result = 0;
+
+        try {
+            connection = this.getConnection();
+
+            String query = "DELETE FROM PLAYERS WHERE player_id = ?";
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, id);
+
+            result = ps.executeUpdate();
+            if(result != 0)
+            {
+                System.out.println("Record deleted");
+            }
+            else{
+                System.out.println("Record does not exist");
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException("deletePlayerByID() " + e.getMessage());
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("findAllPlayers() " + e.getMessage());
+            }
+        }
+    }
+    @Override
     public Player findPlayerByID(int id) throws DaoException
     {
         Connection connection = null;
@@ -127,16 +164,6 @@ public class MySqlPlayerDao extends MySqlDao implements PlayerDaoInterface
         }
         return player;
     }
-
-//    @Override
-//    public List<Player> findAllPlayersLastNameContains(String subString) throws DaoException {
-//        return null;
-//    }
-
-//    @Override
-//    public List<Player> findAllPlayers() throws DaoException {
-//        return null;
-//    }
 
     @Override
     public List<Player> findAllPlayersLastNameContains(String subString) throws DaoException {
