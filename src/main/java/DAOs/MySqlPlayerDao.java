@@ -3,10 +3,7 @@ package DAOs;
 import DTOs.Player;
 import Exceptions.DaoException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,9 +103,46 @@ public class MySqlPlayerDao extends MySqlDao implements PlayerDaoInterface
                     freeConnection(connection);
                 }
             } catch (SQLException e) {
-                throw new DaoException("findAllPlayers() " + e.getMessage());
+                throw new DaoException("deletePlayerByID() " + e.getMessage());
             }
         }
+    }
+    @Override
+    public void insertPlayer(String firstName, String lastName, double weight, double height, LocalDate birthDate, int championshipWins) throws DaoException
+    {
+        Connection connection = null;
+        PreparedStatement ps = null;
+
+        try {
+            connection = this.getConnection();
+
+            String query = "INSERT INTO PLAYERS VALUES (null,?,?,?,?,?,?)";
+
+
+            ps = connection.prepareStatement(query);
+            ps.setString(1, firstName);
+            ps.setString(2, lastName);
+            ps.setDouble(3, weight);
+            ps.setDouble(4, height);
+            ps.setDate(5, Date.valueOf(birthDate));
+            ps.setInt(6, championshipWins);
+
+            ps.executeUpdate();
+        }catch (SQLException e) {
+            throw new DaoException("insertPlayer() " + e.getMessage());
+        }finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("insertPlayer() " + e.getMessage());
+            }
+        }
+
     }
     @Override
     public Player findPlayerByID(int id) throws DaoException
@@ -165,9 +199,6 @@ public class MySqlPlayerDao extends MySqlDao implements PlayerDaoInterface
         return player;
     }
 
-    @Override
-    public List<Player> findAllPlayersLastNameContains(String subString) throws DaoException {
-        return null;
-    }
+
 }
 

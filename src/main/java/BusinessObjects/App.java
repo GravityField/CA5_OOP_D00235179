@@ -73,6 +73,8 @@ public class App
         final int FIND_ALL_PLAYERS = 6;
         final int FIND_PLAYER_BY_KEY= 7;
         final int DELETE_PLAYER_BY_KEY= 8;
+        final int INSERT_PLAYER= 9;
+
 
         final int EXIT = -1;
 
@@ -128,6 +130,10 @@ public class App
                         break;
                     case DELETE_PLAYER_BY_KEY:
                         deletePlayerByID();
+                        break;
+                    case INSERT_PLAYER:
+                        insertPlayer();
+                        break;
                     case EXIT:
                         break;
                     default:
@@ -157,6 +163,7 @@ public class App
         System.out.println("6. Find All Players");
         System.out.println("7. Find Player by Key");
         System.out.println("8. Delete Player by Key");
+        System.out.println("9. Insert Player");
 
         System.out.println("-1. EXIT");
     }
@@ -165,7 +172,6 @@ public class App
         PlayerDaoInterface IPlayerDao = new MySqlPlayerDao();
 
         try {
-            System.out.println("\nCall findAllPlayers()");
             List<Player> players = IPlayerDao.findAllPlayers();     // call a method in the DAO
 
             if (players.isEmpty())
@@ -188,7 +194,6 @@ public class App
 
         try
         {
-            System.out.println("\nCall findPlayerByID()");
             System.out.println("Enter ID to search for:");
             int id = kb.nextInt();
             Player player = IPlayerDao.findPlayerByID(id);
@@ -212,10 +217,53 @@ public class App
 
         try
         {
-            System.out.println("\nCall deletePlayerByID()");
             System.out.println("Enter ID to delete:");
             int id = kb.nextInt();
             IPlayerDao.deletePlayerByID(id);
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+
+    }
+    private void insertPlayer()
+    {
+        PlayerDaoInterface IPlayerDao = new MySqlPlayerDao();
+        Scanner kb = new Scanner(System.in);
+        String firstName = "";
+        String lastName = "";
+        double weight = 0;
+        double height = 0;
+        int year = 0;
+        int month = 0;
+        int day = 0;
+        LocalDate birthDate = LocalDate.now();
+        int championshipWins = 0;
+
+        try
+        {
+            System.out.println("Enter First Name:");
+            firstName = kb.nextLine();
+            System.out.println("Enter Last Name:");
+            lastName = kb.nextLine();
+            System.out.println("Enter Weight:");
+            weight = kb.nextDouble();
+            System.out.println("Enter Height:");
+            height = kb.nextDouble();
+            System.out.println("Enter Birth Year:");
+            year = kb.nextInt();
+            System.out.println("Enter Birth Month:");
+            month = kb.nextInt();
+            System.out.println("Enter Birth Day:");
+            day = kb.nextInt();
+            System.out.println("Enter Championship Wins:");
+            championshipWins = kb.nextInt();
+
+            birthDate = LocalDate.of(year,month,day);
+
+            IPlayerDao.insertPlayer(firstName,lastName,weight,height,birthDate,championshipWins);
+            System.out.println("Player Added");
         }
         catch( DaoException e )
         {
