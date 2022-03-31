@@ -1,9 +1,6 @@
 package BusinessObjects;
 
-import Comparators.ChampionshipWinsComparator;
-import Comparators.SortType;
-import Comparators.TeamNameComparator;
-import Comparators.TwoFieldComparator;
+import Comparators.*;
 import DAOs.MySqlPlayerDao;
 import DAOs.PlayerDaoInterface;
 import DTOs.Player;
@@ -74,6 +71,9 @@ public class App
         final int FIND_PLAYER_BY_KEY= 7;
         final int DELETE_PLAYER_BY_KEY= 8;
         final int INSERT_PLAYER= 9;
+        final int FILTER_PLAYERS= 10;
+        final int RETURN_ALL_PLAYERS_JSON = 11;
+        final int RETURN_PLAYER_JSON = 12;
 
 
         final int EXIT = -1;
@@ -120,7 +120,6 @@ public class App
                         while( !queue2.isEmpty() ) {
                             System.out.println(queue2.remove());
                         }
-
                         break;
                     case FIND_ALL_PLAYERS:
                             findAllPlayers();
@@ -133,6 +132,15 @@ public class App
                         break;
                     case INSERT_PLAYER:
                         insertPlayer();
+                        break;
+                    case FILTER_PLAYERS:
+                        filterYear();
+                        break;
+                    case RETURN_ALL_PLAYERS_JSON:
+                    returnAllPlayersJSON();
+                        break;
+                    case RETURN_PLAYER_JSON:
+                        returnPlayerJSON();
                         break;
                     case EXIT:
                         break;
@@ -164,6 +172,9 @@ public class App
         System.out.println("7. Find Player by Key");
         System.out.println("8. Delete Player by Key");
         System.out.println("9. Insert Player");
+        System.out.println("10. Filter Players DOB after year");
+        System.out.println("11. Return All Players JSON");
+        System.out.println("12. Return Player JSON");
 
         System.out.println("-1. EXIT");
     }
@@ -181,6 +192,48 @@ public class App
                     System.out.println("Player: " + player.toString());
             }
 
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+    }
+    private void returnAllPlayersJSON()
+    {
+        PlayerDaoInterface IPlayerDao = new MySqlPlayerDao();
+
+        try {
+            String playersJSON = IPlayerDao.findAllPlayersJSON();
+
+            if (playersJSON.equals("null"))
+                System.out.println("There are no Players");
+            else {
+
+                    System.out.println("Player: " + playersJSON);
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+    }
+    private void returnPlayerJSON()
+    {
+        PlayerDaoInterface IPlayerDao = new MySqlPlayerDao();
+        Scanner kb = new Scanner(System.in);
+
+        try
+        {
+            System.out.println("Enter ID to search for:");
+            int id = kb.nextInt();
+            String player = IPlayerDao.findPlayerByIDJSON(id);
+
+            if( !player.equals("null") )
+                System.out.println("Player: " + player);
+            else {
+                System.out.println("There are no Players with this id");
+            }
         }
         catch( DaoException e )
         {
@@ -271,7 +324,36 @@ public class App
         }
 
     }
-    private void initialize(List<Player> list, List<Team> teamsList)
+    private void filterYear() {
+        PlayerDaoInterface IPlayerDao = new MySqlPlayerDao();
+        Scanner kb = new Scanner(System.in);
+        BirthDateComparator birthDateComparator = new BirthDateComparator(SortType.Ascending);
+        int year;
+//todo
+        System.out.println("Enter Year to filter above");
+        year = kb.nextInt();
+
+        try {
+
+            List<Player> players = IPlayerDao.findPlayerUsingFilter(year, birthDateComparator);     // call a method in the DAO
+
+            if (players.isEmpty())
+                System.out.println("There are no Players");
+            else {
+                for (Player player : players)
+                    System.out.println("Player: " + player.toString());
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+
+private void initialize(List<Player> list, List<Team> teamsList)
     {
 
         Player p1 = new Player(0,"Jim","Jam",60.50,160,LocalDate.of(1990,12,10), 0);

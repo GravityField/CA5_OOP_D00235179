@@ -19,6 +19,8 @@ package DAOs;
  * can be replaced by mock DAO objects.
  */
 
+import Comparators.BirthDateComparator;
+import Comparators.ChampionshipWinsComparator;
 import DTOs.Player;
 import Exceptions.DaoException;
 
@@ -27,14 +29,20 @@ import java.util.List;
 
 public interface PlayerDaoInterface
 {
+    //7
     public List<Player> findAllPlayers() throws DaoException;
-
+    //8
     public Player findPlayerByID(int id) throws DaoException;
-
+    //9
     public void deletePlayerByID(int id) throws DaoException;
-
+    //10
     public void insertPlayer(String firstName, String lastName, double weight, double height, LocalDate birthDate, int championshipWins) throws DaoException;
-
+    //11
+    public List<Player> findPlayerUsingFilter(int year, BirthDateComparator birthDateComparator) throws DaoException;
+    //12
+    public String findAllPlayersJSON() throws DaoException;
+    //13
+    public String findPlayerByIDJSON(int id) throws DaoException;
 
 
 

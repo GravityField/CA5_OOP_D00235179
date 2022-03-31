@@ -1,9 +1,15 @@
 package DAOs;
 
+import Comparators.BirthDateComparator;
+import Comparators.ChampionshipWinsComparator;
 import DTOs.Player;
 import Exceptions.DaoException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -198,7 +204,100 @@ public class MySqlPlayerDao extends MySqlDao implements PlayerDaoInterface
         }
         return player;
     }
+    @Override
+    public List<Player> findPlayerUsingFilter(int year, BirthDateComparator birthDateComparator) throws DaoException
+    {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Player player = null;
+        List<Player> playersList = new ArrayList<>();
+        try
+        {
+            connection = this.getConnection();
+
+            String query = "SELECT * FROM PLAYERS WHERE Year(dateOfBirth) > ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, year);
+
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next())
+            {
+                int playerId = resultSet.getInt("player_id");
+                String firstName = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
+                double weight = resultSet.getDouble("weight");
+                double height = resultSet.getDouble("height");
+                LocalDate birthDate = resultSet.getDate("dateOfBirth").toLocalDate();
+                int championshipWins = resultSet.getInt("championship_wins");
+
+                player = new Player(playerId,firstName,lastName,weight,height,birthDate,championshipWins);
+                playersList.add(player);
+            }
+        } catch (SQLException e)
+        {
+            throw new DaoException("findPlayerUsingFilter() " + e.getMessage());
+        } finally
+        {
+            try
+            {
+                if (resultSet != null)
+                {
+                    resultSet.close();
+                }
+                if (preparedStatement != null)
+                {
+                    preparedStatement.close();
+                }
+                if (connection != null)
+                {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e)
+            {
+                throw new DaoException("findPlayerUsingFilter() " + e.getMessage());
+            }
+        }
+        playersList.sort(birthDateComparator);
+        return playersList;
+    }
+    @Override
+    public String findAllPlayersJSON()
+    {
+        List<Player> playersList;
+        Gson gsonParser = new Gson(); //gives errors for datetime
+        ObjectMapper mapper = new ObjectMapper();
 
 
+        String playerJSON = "";
+        try
+        {
+            playersList = findAllPlayers();
+            // playerJSON = gsonParser.toJson(playersList);
+            playerJSON =  mapper.writeValueAsString(playersList);
+        } catch (DaoException | JsonProcessingException throwables) {
+            throwables.printStackTrace();
+        }
+        return playerJSON;
+    }
+    @Override
+    public String findPlayerByIDJSON(int id)
+    {
+        Player player;
+        Gson gsonParser = new Gson(); //gives errors for datetime
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        mapper.setDateFormat(df);
+        String playerJSON = "";
+        try
+        {
+            player = findPlayerByID(id);
+            // playerJSON = gsonParser.toJson(playersList);
+            playerJSON =  mapper.writeValueAsString(player);
+        } catch (DaoException | JsonProcessingException throwables) {
+            throwables.printStackTrace();
+        }
+        return playerJSON;
+    }
 }
 
