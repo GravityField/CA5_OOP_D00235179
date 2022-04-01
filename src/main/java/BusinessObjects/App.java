@@ -121,6 +121,7 @@ public class App
                             System.out.println(queue2.remove());
                         }
                         break;
+                        //Database onwards
                     case FIND_ALL_PLAYERS:
                             findAllPlayers();
                         break;

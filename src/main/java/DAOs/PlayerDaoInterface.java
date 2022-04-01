@@ -37,6 +37,7 @@ public interface PlayerDaoInterface
     public void deletePlayerByID(int id) throws DaoException;
     //10
     public void insertPlayer(String firstName, String lastName, double weight, double height, LocalDate birthDate, int championshipWins) throws DaoException;
+    public void insertPlayer(int id,String firstName, String lastName, double weight, double height, LocalDate birthDate, int championshipWins) throws DaoException;
     //11
     public List<Player> findPlayerUsingFilter(int year, BirthDateComparator birthDateComparator) throws DaoException;
     //12
