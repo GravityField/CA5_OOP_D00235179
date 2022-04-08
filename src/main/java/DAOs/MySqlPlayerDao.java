@@ -7,10 +7,12 @@ import Exceptions.DaoException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import DAOs.LocalDateAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -308,34 +310,38 @@ public class MySqlPlayerDao extends MySqlDao implements PlayerDaoInterface
         Gson gsonParser = new Gson(); //gives errors for datetime
         ObjectMapper mapper = new ObjectMapper();
 
-
         String playerJSON = "";
         try
         {
             playersList = findAllPlayers();
             // playerJSON = gsonParser.toJson(playersList);
             playerJSON =  mapper.writeValueAsString(playersList);
-        } catch (DaoException | JsonProcessingException throwables) {
-            throwables.printStackTrace();
+        } catch (DaoException | JsonProcessingException throwable) {
+            throwable.printStackTrace();
         }
         return playerJSON;
     }
     @Override
-    public String findPlayerByIDJSON(int id)
-    {
+    public String findPlayerByIDJSON(int id) throws DaoException {
+
         Player player;
-        Gson gsonParser = new Gson(); //gives errors for datetime
-        ObjectMapper mapper = new ObjectMapper();
-        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        mapper.setDateFormat(df);
-        String playerJSON = "";
+            String playerJSON = "";
         try
         {
+        Gson gsonParser = new GsonBuilder()
+                //.setPrettyPrinting()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
+//        ObjectMapper mapper = new ObjectMapper();
+//        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+//        mapper.setDateFormat(df);
+
             player = findPlayerByID(id);
-            // playerJSON = gsonParser.toJson(playersList);
-            playerJSON =  mapper.writeValueAsString(player);
-        } catch (DaoException | JsonProcessingException throwables) {
-            throwables.printStackTrace();
+             playerJSON = gsonParser.toJson(player);
+//            playerJSON =  mapper.writeValueAsString(player);
+        } catch (DaoException e)
+        {
+            System.out.println(e);
         }
         return playerJSON;
     }

@@ -179,6 +179,8 @@ public class App
 
         System.out.println("-1. EXIT");
     }
+
+
     private void findAllPlayers()
     {
         PlayerDaoInterface IPlayerDao = new MySqlPlayerDao();
