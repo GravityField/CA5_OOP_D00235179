@@ -63,11 +63,13 @@ public class Client
             final int DISPLAY_BY_ID = 1;
             final int DISPLAY_ALL = 2;
             final int ADD_PLAYER = 3;
+            final int DELETE_PLAYER = 4;
             final int EXIT = -1;
 
             String command;
             String usersInput;
-
+            String input;
+            int id;
 
             while(option != EXIT) {
 
@@ -79,13 +81,18 @@ public class Client
                         case DISPLAY_BY_ID:
                             command = "DisplayById";
                             System.out.println("Enter Id:");
-                            int id = in.nextInt();
+                            id = in.nextInt();
                             in.nextLine();
                             command = command + " " + id;
                             socketWriter.println(command);
-                            String input = socketReader.nextLine();
+                            input = socketReader.nextLine();
                             Player p = gsonParser.fromJson(input, Player.class);
-                            System.out.println(p);
+                            if(p != null) {
+                                System.out.println(p);
+                            }
+                            else{
+                                System.out.println("Player does not exist");
+                            }
                             break;
                         case DISPLAY_ALL:
                             command = "DisplayAll";
@@ -122,7 +129,17 @@ public class Client
                             input = socketReader.nextLine();
                             System.out.println("BusinessObjects.Client message: Response from server: \"" + input + "\"");
                             break;
+                        case DELETE_PLAYER:
+                            command = "Delete";
+                            System.out.println("Enter Id to delete:");
+                            id = in.nextInt();
+                            in.nextLine();
+                            command = command + " " + id;
+                            socketWriter.println(command);
+                            System.out.println("Deleted");
+                            break;
                         case EXIT:
+                            System.out.println("Closing");
                             break;
                         default:
                             break;
@@ -153,6 +170,8 @@ public class Client
         System.out.println("1. Display Student By Id");
         System.out.println("2. Display All Students");
         System.out.println("3. Add Player");
+        System.out.println("4. Delete Player By Id");
+        System.out.println("-1. Exit");
         System.out.println("Enter option:");
     }
 }
