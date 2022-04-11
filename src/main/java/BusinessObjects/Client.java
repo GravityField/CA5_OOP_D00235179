@@ -27,8 +27,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.time.LocalDate;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 public class Client
 {
@@ -64,6 +63,7 @@ public class Client
             final int DISPLAY_ALL = 2;
             final int ADD_PLAYER = 3;
             final int DELETE_PLAYER = 4;
+            final int ADDITIONAL_FEATURE = 5;
             final int EXIT = -1;
 
             String command;
@@ -95,10 +95,16 @@ public class Client
                             }
                             break;
                         case DISPLAY_ALL:
+
                             command = "DisplayAll";
                             socketWriter.println(command);
                             input = socketReader.nextLine();
-                            System.out.println("BusinessObjects.Client message: Response from server: \"" + input + "\"");
+                            Player[] players = gsonParser.fromJson(input, Player[].class);
+                            for(Player player: players)
+                            {
+                                System.out.println(player);
+                            }
+                            //System.out.println("BusinessObjects.Client message: Response from server: \"" + input + "\"");
                             break;
                         case ADD_PLAYER:
                             command = "Add";
@@ -120,11 +126,17 @@ public class Client
                             int championshipWins = in.nextInt();
                             LocalDate birthDate = LocalDate.of(year,month,day);
                             Player newP = new Player(firstName,lastName,weight,height,birthDate,championshipWins);
-                            String player =  gsonParser.toJson(newP);
-                            command = command + " " + player;
+                            String newPlayer =  gsonParser.toJson(newP);
+                            command = command + " " + newPlayer;
                             socketWriter.println(command);
                             input = socketReader.nextLine();
-                            System.out.println(input);
+                            if(!input.equals("null"))
+                            {
+                                System.out.println("Player added");
+                            }
+                            else{
+                                System.out.println("Player was not added");
+                            }
                             socketWriter.println(command);
                             input = socketReader.nextLine();
                             System.out.println("BusinessObjects.Client message: Response from server: \"" + input + "\"");
@@ -136,7 +148,22 @@ public class Client
                             in.nextLine();
                             command = command + " " + id;
                             socketWriter.println(command);
-                            System.out.println("Deleted");
+                            input = socketReader.nextLine();
+                            System.out.println(input);
+                            if(input.equals("null"))
+                            {
+                                System.out.println("Player deleted");
+                            }
+                            else
+                            {
+                                System.out.println("Deleted");
+                            }
+                            break;
+                            case ADDITIONAL_FEATURE:
+                                command = "Summary";
+                                socketWriter.println(command);
+                                input = socketReader.nextLine();
+                                System.out.println(input);
                             break;
                         case EXIT:
                             System.out.println("Closing");
@@ -171,10 +198,8 @@ public class Client
         System.out.println("2. Display All Students");
         System.out.println("3. Add Player");
         System.out.println("4. Delete Player By Id");
+        System.out.println("5. Summary");
         System.out.println("-1. Exit");
         System.out.println("Enter option:");
     }
 }
-
-
-//  LocalTime time = LocalTime.parse(timeString); // Parse timeString -> convert to LocalTime object if required
