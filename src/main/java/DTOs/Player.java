@@ -22,6 +22,14 @@ public class Player{
                 this.birthDate = birthDate;
                 this.championshipWins = championshipWins;
         }
+        public Player(String firstName, String lastName, double weight, double height, LocalDate birthDate, int championshipWins) {
+                this.firstName = firstName;
+                this.lastName = lastName;
+                this.weight = weight;
+                this.height = height;
+                this.birthDate = birthDate;
+                this.championshipWins = championshipWins;
+        }
 
         public int getPlayerID() {
                 return playerID;

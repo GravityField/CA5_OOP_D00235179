@@ -307,16 +307,19 @@ public class MySqlPlayerDao extends MySqlDao implements PlayerDaoInterface
     public String findAllPlayersJSON()
     {
         List<Player> playersList;
-        Gson gsonParser = new Gson(); //gives errors for datetime
-        ObjectMapper mapper = new ObjectMapper();
+        Gson gsonParser = new GsonBuilder()
+                //.setPrettyPrinting()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
+//        ObjectMapper mapper = new ObjectMapper();
 
         String playerJSON = "";
         try
         {
             playersList = findAllPlayers();
             // playerJSON = gsonParser.toJson(playersList);
-            playerJSON =  mapper.writeValueAsString(playersList);
-        } catch (DaoException | JsonProcessingException throwable) {
+            playerJSON =  gsonParser.toJson(playersList);
+        } catch (DaoException throwable) {
             throwable.printStackTrace();
         }
         return playerJSON;

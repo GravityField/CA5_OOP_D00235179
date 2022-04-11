@@ -19,15 +19,14 @@ package BusinessObjects; /** CLIENT                                             
 
 import DAOs.LocalDateAdapter;
 import DTOs.Player;
+import Exceptions.DaoException;
 import com.google.gson.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -63,77 +62,80 @@ public class Client
             int option = 0;
             final int DISPLAY_BY_ID = 1;
             final int DISPLAY_ALL = 2;
-            final int EXIT = 3;
+            final int ADD_PLAYER = 3;
+            final int EXIT = -1;
 
-            String command = "";
+            String command;
             String usersInput;
-            printMenu();
+
 
             while(option != EXIT) {
 
                 try {
+                    printMenu();
                     usersInput = in.nextLine();
                     option = Integer.parseInt(usersInput);
                     switch (option) {
                         case DISPLAY_BY_ID:
                             command = "DisplayById";
-
+                            System.out.println("Enter Id:");
+                            int id = in.nextInt();
+                            in.nextLine();
+                            command = command + " " + id;
+                            socketWriter.println(command);
+                            String input = socketReader.nextLine();
+                            Player p = gsonParser.fromJson(input, Player.class);
+                            System.out.println(p);
                             break;
                         case DISPLAY_ALL:
                             command = "DisplayAll";
-
+                            socketWriter.println(command);
+                            input = socketReader.nextLine();
+                            System.out.println("BusinessObjects.Client message: Response from server: \"" + input + "\"");
+                            break;
+                        case ADD_PLAYER:
+                            command = "Add";
+                            System.out.println("Enter First Name:");
+                            String firstName = in.nextLine();
+                            System.out.println("Enter Last Name:");
+                            String lastName = in.nextLine();
+                            System.out.println("Enter Weight:");
+                            double weight = in.nextDouble();
+                            System.out.println("Enter Height:");
+                            double height = in.nextDouble();
+                            System.out.println("Enter Birth Year:");
+                            int year = in.nextInt();
+                            System.out.println("Enter Birth Month:");
+                            int month = in.nextInt();
+                            System.out.println("Enter Birth Day:");
+                            int day = in.nextInt();
+                            System.out.println("Enter Championship Wins:");
+                            int championshipWins = in.nextInt();
+                            LocalDate birthDate = LocalDate.of(year,month,day);
+                            Player newP = new Player(firstName,lastName,weight,height,birthDate,championshipWins);
+                            String player =  gsonParser.toJson(newP);
+                            command = command + " " + player;
+                            socketWriter.println(command);
+                            input = socketReader.nextLine();
+                            System.out.println(input);
+                            socketWriter.println(command);
+                            input = socketReader.nextLine();
+                            System.out.println("BusinessObjects.Client message: Response from server: \"" + input + "\"");
                             break;
                         case EXIT:
                             break;
-
+                        default:
+                            break;
 
                     }
                 }catch(InputMismatchException | NumberFormatException e)
                 {
                     System.out.print("Invalid option - please enter number in range\n");
                 }
-
-
-
-                if (command.startsWith("DisplayById"))
-                {
-                    try {
-                        System.out.println("Enter Id:");
-                        int id = in.nextInt();
-                        command = command + " " + id;
-                        socketWriter.println(command);
-                        String input = socketReader.nextLine();
-                        Player p = gsonParser.fromJson(input, Player.class);
-                        System.out.println(p);
-                    }catch (JsonSyntaxException e){
-                        System.out.println(e);
-                    }
-                }
-                else if (command.startsWith("DisplayAll"))   //we expect the server to return a time
-                {
-                    socketWriter.println(command);
-                    String input = socketReader.nextLine();
-                    System.out.println("BusinessObjects.Client message: Response from server: \"" + input + "\"");
-                }
-                else if (command.startsWith("Echo"))
-                {
-                    String input = socketReader.nextLine();
-                    System.out.println("BusinessObjects.Client message: Response from server: \"" + input + "\"");
-
-                }
-                else                            // the user has entered the Echo command or an invalid command
-                {
-                    String input = socketReader.nextLine();
-                    System.out.println("BusinessObjects.Client message: Response from server: \"" + input + "\"");
-                }
-
-                printMenu();
-                in.nextLine();
-//                command = in.nextLine();
+//                in.nextLine();
+//                command = "";
 //                socketWriter.println(command);
-
             }
-
 
             socketWriter.close();
             socketReader.close();
@@ -141,6 +143,8 @@ public class Client
 
         } catch (IOException e) {
             System.out.println("BusinessObjects.Client message: IOException: "+e);
+        }catch (JsonSyntaxException e){
+            System.out.println(e);
         }
     }
     void printMenu()
@@ -148,7 +152,7 @@ public class Client
         System.out.println("Client Menu");
         System.out.println("1. Display Student By Id");
         System.out.println("2. Display All Students");
-        System.out.println("3. TBD");
+        System.out.println("3. Add Player");
         System.out.println("Enter option:");
     }
 }
