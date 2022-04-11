@@ -162,8 +162,12 @@ public class Client
                             case ADDITIONAL_FEATURE:
                                 command = "Summary";
                                 socketWriter.println(command);
-                                input = socketReader.nextLine();
-                                System.out.println(input);
+                                int count = socketReader.nextInt();
+                                double averageHeight = socketReader.nextDouble();
+                                double averageWeight = socketReader.nextDouble();
+                                double averageWins = socketReader.nextDouble();
+                                System.out.println("Count\tAverage Height\tAverage Weight\tAverage Wins\t");
+                                System.out.printf("%-10d%-15.2f%-15.2f%-15.2f", count, averageHeight, averageWeight, averageWins);
                             break;
                         case EXIT:
                             System.out.println("Closing");
@@ -193,7 +197,7 @@ public class Client
     }
     void printMenu()
     {
-        System.out.println("Client Menu");
+        System.out.println("\nClient Menu");
         System.out.println("1. Display Student By Id");
         System.out.println("2. Display All Students");
         System.out.println("3. Add Player");
